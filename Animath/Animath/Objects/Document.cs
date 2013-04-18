@@ -32,11 +32,11 @@ namespace Animath
 		public struct Layer {
 			public int SelectedSpriteId;
 			public int SpriteSequenceId;
-			public Cheap<Layer> SubLayerIds;
+			public Cheap<Layer> SubLayers;
 		}
 
 		public struct Frame {
-			public Cheap<Layer> LayerIds;
+			public Cheap<Layer> Layers;
 		}
 
 		public void Defragment() {
