@@ -56,7 +56,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="Objects\Document.cs" />
     <Compile Include="Objects\Cheap.cs" />
-    <Compile Include="Tests\TestCheap.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

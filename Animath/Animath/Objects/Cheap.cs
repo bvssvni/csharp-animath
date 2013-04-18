@@ -46,12 +46,13 @@ namespace Utils
 	/// </summary>
 	public sealed class Cheap<T> : IDisposable
 	{
-		private const int MIN_BUFFER_SIZE = 1024;
-
+		private const int MIN_ITEM_BUFFER_SIZE = 1024;
+		private const int MIN_SLICE_BUFFER_SIZE = 128;
+		
 		private int pos;
 		private UInt64 id;
 		private bool disposed = false;
-
+		
 		private static UInt64 LastId;
 		public static T[] Items;
 		private static Slice[] Slices;
@@ -61,22 +62,22 @@ namespace Utils
 		// Contains the slice position of fragmentation start.
 		// This speeds up application when there is 
 		private static int SliceOffset;
-
+		
 		private struct Slice {
 			public UInt64 Id;
 			public int Offset;
 			public int Count;
 		}
-
+		
 		static Cheap() {
-			Items = new T[MIN_BUFFER_SIZE];
-			Slices = new Slice[128];
+			Items = new T[MIN_ITEM_BUFFER_SIZE];
+			Slices = new Slice[MIN_SLICE_BUFFER_SIZE];
 			ItemLength = 0;
 			SliceLength = 0;
 			LastId = 0;
 			SliceOffset = 0;
 		}
-
+		
 		/// <summary>
 		/// Packs the lists together in memory.
 		/// </summary>
@@ -103,59 +104,64 @@ namespace Utils
 					}
 				}
 			}
-
+			
 			// Delete the moved slices.
 			for (int i = 0; i < moveSlices; i++) {
 				Slices[slice_length - i - 1].Id = UInt64.MaxValue;
 			}
-
+			
 			SliceLength -= moveSlices;
 			ItemLength -= moveItems;
 			SliceOffset = SliceLength;
-
-			if (SliceLength < (Slices.Length >> 1)) {
-				Array.Resize<Slice>(ref Slices, Slices.Length >> 1);
+			
+			// Resize slice array down if taking up less than 50% of buffer.
+			if (SliceLength < (MIN_SLICE_BUFFER_SIZE >> 1) && Slices.Length > (MIN_SLICE_BUFFER_SIZE << 1)) {
+				Array.Resize<Slice>(ref Slices, MIN_SLICE_BUFFER_SIZE);
+			} else if (SliceLength < (Slices.Length >> 1)) {
+				Array.Resize<Slice>(ref Slices, SliceLength << 1);
 			}
-			if (ItemLength < (MIN_BUFFER_SIZE >> 1) && Items.Length > (MIN_BUFFER_SIZE << 1)) {
-				Array.Resize<T>(ref Items, MIN_BUFFER_SIZE);
-			} else {
+			
+			// Resize slice array down if taking up less than 50% of buffer.
+			if (ItemLength < (MIN_ITEM_BUFFER_SIZE >> 1) && Items.Length > (MIN_ITEM_BUFFER_SIZE << 1)) {
+				Array.Resize<T>(ref Items, MIN_ITEM_BUFFER_SIZE);
+			} else if (ItemLength < (Items.Length >> 1)) {
 				Array.Resize<T>(ref Items, ItemLength << 1);
 			}
 		}
-
+		
 		public bool GetRange(ref int start, ref int end)
 		{
 			// Get the correct position in case of defragmentation.
 			int pos = this.pos;
 			while (Slices[pos].Id > this.id) --pos;
-
+			
 			if (Slices[pos].Id != this.id) return false;
-
+			
 			this.pos = pos;
 			var slice = Slices[pos];
 			start = slice.Offset;
 			end = slice.Offset + slice.Count;
 			return true;
 		}
-
+		
 		public Cheap(params T[] data) {
 			int n = data.Length;
-
+			
 			// Resize items array if necessary.
 			if (n + ItemLength > Items.Length) {
 				Array.Resize<T>(ref Items, (n + ItemLength) << 1);
 			}
-
+			
 			// Resize the slice array if necessary.
 			if (SliceLength + 1 > Slices.Length) {
 				Array.Resize<Slice>(ref Slices, Slices.Length << 1);
 			}
-
+			
 			// Insert data.
 			int start = ItemLength;
 			// Move defragment offset if adding right after it.
 			if (SliceOffset == SliceLength) ++SliceOffset;
-
+			
 			ItemLength += n;
 			this.pos = SliceLength++;
 			data.CopyTo(Items, start);
@@ -165,23 +171,23 @@ namespace Utils
 				Id = this.id = LastId++
 			};
 		}
-
+		
 		public void Dispose() {
 			if (disposed) return;
-
+			
 			disposed = true;
-
+			
 			// Get the correct position in case of defragmentation.
 			int pos = this.pos;
 			while (Slices[pos].Id > this.id) --pos;
-
+			
 			// Flag the slice as deleted.
 			Slices[pos].Id = UInt64.MaxValue;
 			if (pos < SliceOffset) SliceOffset = pos;
-
+			
 			GC.SuppressFinalize(this);
 		}
-
+		
 		~Cheap() {
 			Dispose();
 		}
