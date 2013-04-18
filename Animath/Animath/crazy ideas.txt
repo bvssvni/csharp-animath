@@ -1,0 +1,21 @@
+
+64x32 resolution.
+Frame by frame animation.
+Everything stored in same texture.
+Sketch but with pixel graphics.
+Right-click is select color.
+Sub layers in two groups: Front and back.
+Effects that can be triggered on layers.
+	Play sequence.
+
+Design data without ids.
+Use a single array that contains items in lists.
+Lists are reference objects since one does not want to update them.
+
+An object that points to start and end indices of an array
+but does not contain its own data.
+Store all items of same type in same array in memory.
+Making the structure generic.
+Keep track of the unused locations in a group.
+Defragment lists when using less than 50% of the space.
+

@@ -1,0 +1,42 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Animath/Tests/TestCheap.cs">
+    <Files>
+      <File FileName="Animath/Main.cs" Line="1" Column="1" />
+      <File FileName="Animath/MainWindow.cs" Line="1" Column="1" />
+      <File FileName="Animath/Objects/Document.cs" Line="5" Column="1" />
+      <File FileName="Animath/todo.txt" Line="7" Column="1" />
+      <File FileName="Animath/crazy ideas.txt" Line="21" Column="1" />
+      <File FileName="Animath/Objects/Cheap.cs" Line="191" Column="1" />
+      <File FileName="Animath/Tests/TestCheap.cs" Line="49" Column="1" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Animath" expanded="True">
+            <Node name="Objects" expanded="True" />
+            <Node name="Tests" expanded="True">
+              <Node name="TestCheap.cs" selected="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
+      <Pad Id="ConnectionManagerPad">
+        <State selected="True" />
+      </Pad>
+      <Pad Id="MonoDevelop.NUnit.TestPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

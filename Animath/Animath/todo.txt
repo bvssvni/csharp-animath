@@ -1,0 +1,7 @@
+* Completed on same day.
++ Completed on later day.
+- Decided against on later day.
+
+17.04.2013
+
+
